@@ -1,0 +1,34 @@
+Run locally on laptop to test samples/analysis before on site workday
+
+files were received from Box, sequenced at ANL Sequencing Core 16s
+
+File already demultiplexed by ANL Sequencing Core.
+
+R
+library(phyloseq)
+library(dada2)
+library(microbiome)
+library(ggplot2)
+library(microbiomeMarker)
+library(Biostrings)
+library(ShortRead)
+
+path <- "/Users/justinpodowski/Downloads/240221_Forrester_demultiplxed_fastqs/reads"
+
+fnFs <- sort(list.files(path, pattern="_L001_R1_001.fastq.gz", full.names = TRUE))
+fnRs <- sort(list.files(path, pattern="_L001_R2_001.fastq.gz", full.names = TRUE))
+
+sample.names <- sapply(strsplit(basename(fnFs), "_L001"), '[', 1)
+
+filtFs <- file.path(path, "filtered", paste0(sample.names, "_F_filt.fastq.gz"))
+filtRs <- file.path(path, "filtered", paste0(sample.names, "_R_filt.fastq.gz"))
+names(filtFs) <- sample.names
+names(filtRs) <- sample.names
+
+out <- filterAndTrim(fnFs,filtFs,fnRs,filtRs, trimLeft=10, maxN=0, maxEE=c(2,2), truncQ=2 , rm.phix=TRUE, compress=TRUE, multithread=TRUE)
+errF <- learnErrors(filtFs, multithread=TRUE)
+errR <- learnErrors(filtRs, multithread=TRUE)
+dadaFs <- dada(filtFs, err=errF, multithread=TRUE)
+dadaRs <- dada(filtRs, err=errR, multithread=TRUE)
+mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, verbose=TRUE)
+seqtab <- makeSequenceTable(mergers)
