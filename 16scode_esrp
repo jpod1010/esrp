@@ -32,3 +32,30 @@ dadaFs <- dada(filtFs, err=errF, multithread=TRUE)
 dadaRs <- dada(filtRs, err=errR, multithread=TRUE)
 mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, verbose=TRUE)
 seqtab <- makeSequenceTable(mergers)
+
+
+seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=TRUE, verbose=TRUE)
+
+taxa <- assignTaxonomy(seqtab.nochim, "/Users/justinpodowski/Downloads/240221_Forrester_demultiplxed_fastqs/taxdbs/silva_nr99_v138.1_train_set.fa.gz",  multithread=TRUE)
+taxa <- addSpecies(taxa, "/Users/justinpodowski/Downloads/240221_Forrester_demultiplxed_fastqs/taxdbs/silva_species_assignment_v138.1.fa.gz")
+
+esrp_phyloseq_sampledata <- read.table("/Users/justinpodowski/Downloads/240221_Forrester_demultiplxed_fastqs/ESRP_Sampledata_Phyloseq.txt" ,  header=TRUE, sep="\t", na.strings=" ")
+
+sampledf <- as.data.frame(esrp_phyloseq_sampledata)
+rownames(sampledf) <- sampledf$SampleName
+sampledf <- sampledf[,-1]
+ps <- phyloseq(otu_table(seqtab.nochim, taxa_are_rows = FALSE), sample_data(sampledf), tax_table(taxa))
+dna <- Biostrings::DNAStringSet(taxa_names(ps))
+names(dna) <- taxa_names(ps)
+ps <- merge_phyloseq(ps, dna)
+taxa_names(ps) <- paste0("ASV", seq(ntaxa(ps)))
+
+
+ps.prop <- transform_sample_counts(ps, function(otu) otu/sum(otu))
+ord.nmds.bray <- ordinate(ps.prop, method="NMDS", distance = "bray")
+
+esrp_color_values <-c("Urea"="Red","NC"="Black","Fipronil"="Green","Atrazine"="Purple","Malathion"="Yellow","Gamma"="Orange")
+
+save.image("/Users/justinpodowski/Downloads/240221_Forrester_demultiplxed_fastqs/Esrp_16s.Rdata")
+
+
