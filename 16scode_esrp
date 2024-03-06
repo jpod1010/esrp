@@ -4,6 +4,12 @@ files were received from Box, sequenced at ANL Sequencing Core 16s
 
 File already demultiplexed by ANL Sequencing Core.
 
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("microbiomeMarker")
+
+
 R
 library(phyloseq)
 library(dada2)
