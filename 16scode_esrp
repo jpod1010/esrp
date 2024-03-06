@@ -9,6 +9,9 @@ if (!require("BiocManager", quietly = TRUE))
 
 BiocManager::install("microbiomeMarker")
 
+library(BiocManager)
+BiocManager::install("microbiome")
+
 
 https://zenodo.org/records/4587955
 
