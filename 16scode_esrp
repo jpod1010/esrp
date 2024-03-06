@@ -68,6 +68,11 @@ ord.nmds.bray <- ordinate(ps.prop, method="NMDS", distance = "bray")
 
 esrp_color_values <-c("Urea"="Red","NC"="Black","Fipronil"="Green","Atrazine"="Purple","Malathion"="Yellow","Gamma"="Orange")
 
+esrp_lefse <- run_lefse(ps, lda_cutoff = 3, group = "Chemical", taxa_rank = "none")
+
+boxplot_abundance(ps, x="Chemical", y="ASV7", show.points = FALSE) + geom_boxplot(aes(fill=sample_data(ps_trimmed_pruned_prop_nouiuc_notechreps)$ChemConc)) + theme(legend.key.size = unit(2, "line"),panel.background = element_blank() ,  axis.line = element_line(colour = "black", size=1.5), plot.caption = element_text(hjust=0, size=16), axis.title = element_text(face="bold", size=16), legend.title = element_blank() ,axis.text = element_text(size = 12, face="bold"), axis.text.x.bottom = element_text(vjust = 0.3)) + xlab("") + ylim(c(0,0.1)) + xlim(c("KT","KTO"))
+
+
 save.image("/Users/justinpodowski/Downloads/240221_Forrester_demultiplxed_fastqs/Esrp_16s.Rdata")
 
 
