@@ -56,6 +56,8 @@ esrp_phyloseq_sampledata <- read.table("/Users/justinpodowski/Downloads/240221_F
 sampledf <- as.data.frame(esrp_phyloseq_sampledata)
 rownames(sampledf) <- sampledf$SampleName
 sampledf <- sampledf[,-1]
+
+#portions to rerun to fix figure ordering
 sampledf$Day <- factor(sampledf$Day, levels=c("D0","D7","D35))
 ps <- phyloseq(otu_table(seqtab.nochim, taxa_are_rows = FALSE), sample_data(sampledf), tax_table(taxa))
 dna <- Biostrings::DNAStringSet(taxa_names(ps))
@@ -66,6 +68,8 @@ taxa_names(ps) <- paste0("ASV", seq(ntaxa(ps)))
 
 ps.prop <- transform_sample_counts(ps, function(otu) otu/sum(otu))
 ord.nmds.bray <- ordinate(ps.prop, method="NMDS", distance = "bray")
+
+#portions to rerun to fix figure ordering
 
 esrp_color_values <-c("Urea"="Red","NC"="Black","Fipronil"="Green","Atrazine"="Purple","Malathion"="Yellow","Gamma"="Orange")
 
