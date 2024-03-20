@@ -56,8 +56,8 @@ esrp_phyloseq_sampledata <- read.table("/Users/justinpodowski/Downloads/240221_F
 sampledf <- as.data.frame(esrp_phyloseq_sampledata)
 rownames(sampledf) <- sampledf$SampleName
 sampledf <- sampledf[,-1]
-ps <- phyloseq(otu_table(seqtab.nochim, taxa_are_rows = FALSE), sample_data(sampledf), tax_table(taxa))
 sampledf$Day <- factor(sampledf$Day, levels=c("D0","D7","D35))
+ps <- phyloseq(otu_table(seqtab.nochim, taxa_are_rows = FALSE), sample_data(sampledf), tax_table(taxa))
 dna <- Biostrings::DNAStringSet(taxa_names(ps))
 names(dna) <- taxa_names(ps)
 ps <- merge_phyloseq(ps, dna)
